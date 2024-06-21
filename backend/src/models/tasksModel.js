@@ -1,10 +1,22 @@
 const connection = require('./connection');
 
 const getAll = async () => {
-    const tasks = await connection.execute('SELECT * FROM tasks'); //executando query no banco
-    return tasks[0];
+    const [tasks] = await connection.execute('SELECT * FROM tasks'); //executando query no banco
+    return tasks;
 };
 
+const createTask = async (task) => {
+    const { title } = task;
+    const dateUTC = new Date(Date.now()).toUTCString();
+
+    const query = 'INSERT INTO tasks(title, status, created_at) VALUES (?,?,?)';
+    
+    const [createdTask] = await connection.execute(query, [title, 'pendente', dateUTC]);
+    return createdTask;
+    
+}
+
 module.exports = {
-    getAll
+    getAll,
+    createTask,
 };
